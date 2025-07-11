@@ -26,5 +26,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: packer build -var "role_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Packer-Role" .
+        run: |
+          cd paker
+          packer build -var "role_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Packer-Role" .
 
