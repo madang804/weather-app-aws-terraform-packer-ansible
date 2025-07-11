@@ -27,7 +27,7 @@ build {
   sources = ["source.amazon-ebs.amazon_ubuntu24"]
 
   provisioner "ansible" {
-    playbook_file = "../ansible/playbook.yml"
+    playbook_file = "./ansible/playbook.yml"
     ansible_env_vars = ["ANSIBLE_HOST_KEY_CHECKING=False"]
   }
 }
