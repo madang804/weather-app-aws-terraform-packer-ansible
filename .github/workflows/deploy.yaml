@@ -18,7 +18,9 @@ jobs:
           sudo apt install -y ansible
             
       - name: Packer Init
-        run: packer init .
+        run: |
+          cd packer
+          packer init .
       
       - name: Packer Build
         env:
