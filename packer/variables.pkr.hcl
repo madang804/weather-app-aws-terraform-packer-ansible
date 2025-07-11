@@ -25,6 +25,7 @@ variable "ssh_username" {
 
 variable "role_arn" {
   type    = string
+  default = ""
 }
 
 variable "session_name" {
