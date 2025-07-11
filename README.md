@@ -5,7 +5,7 @@ A simple web API built with Python and Flask that provides weather-related infor
 
 ## Project Overview
 
-![weather-app-aws-terraform-packer-ansible.png](.weather-app-aws-terraform-packer-ansible.png)
+![weather-app-aws-terraform-packer-ansible.png](./png/weather-app-aws-terraform-packer-ansible.png)
 
 This project consists of:
 - A Python Flask application that serves weather data via API endpoints
