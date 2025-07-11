@@ -1,0 +1,66 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  vars:
+    packages:
+      - python3-pip
+      - python3-venv
+
+  tasks:
+    - name: Copy flask app & requirements.txt
+      copy:
+        src: ../app/
+        dest: /home/ubuntu/app/
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Install pip & python3-venv
+      apt:
+        name: "{{ packages}}"
+        state: "present"
+        update_cache: true
+        autoremove: true
+        clean: true
+
+    - name: Create virtual environment
+      command: python3 -m venv /home/ubuntu/app/venv
+
+    - name: Install requirements.txt using venv pip
+      shell: |
+        /home/ubuntu/app/venv/bin/pip install --upgrade pip
+        /home/ubuntu/app/venv/bin/pip install --break-system-packages -r /home/ubuntu/app/requirements.txt
+
+    - name: Create systemd service file for flask app
+      copy:
+        src: ./flask.service
+        dest: /etc/systemd/system/flask.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon
+      systemd_service:
+        daemon_reload: true
+
+    - name: Enable flask service
+      systemd_service:
+        name: flask
+        enabled: true
+
+    - name: Start flask service
+      systemd_service:
+        name: flask
+        state: "started"
+
+    - name: Assert flask service is enabled at boot
+      command: systemctl is-enabled flask
+      register: flask_enabled
+      ignore_errors: yes
+
+    - name: Fail if flask service is not enabled
+      fail:
+        msg: "Flask systemd service is NOT enabled at boot!"
+      when: flask_enabled.stdout != "enabled"
+...
