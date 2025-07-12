@@ -1,0 +1,6 @@
+ami_name      = "packer-amazon_ubuntu24-{{timestamp}}"
+instance_type = "t2.micro"
+region        = "eu-west-2"
+source_ami    = "ami-044415bb13eee2391"
+ssh_username  = "ubuntu"
+session_name  = "packer-session"
