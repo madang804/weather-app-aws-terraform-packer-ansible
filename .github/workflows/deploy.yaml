@@ -30,6 +30,4 @@ jobs:
           cd packer
           packer build \
             -var "role_arn=arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Packer-Role" \
-            -var-file="variables.pkrvars.hcl" \
             .
-
