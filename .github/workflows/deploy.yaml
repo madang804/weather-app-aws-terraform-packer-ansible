@@ -10,7 +10,9 @@ jobs:
   packer_build:
     runs-on: ubuntu-latest      
     defaults:
-      working-directory: packer
+      run:
+        shell: bash
+        working-directory: packer
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
