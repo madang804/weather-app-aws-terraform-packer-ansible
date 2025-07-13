@@ -4,7 +4,7 @@ on:
     inputs:
       job_selection:
         type: choice
-        desctctiption: "Select which jobs to run"
+        description: "Select which jobs to run"
         options:
           - all
           - packer_build_only
@@ -20,7 +20,7 @@ permissions:
 jobs:
   packer_build:
     if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'packer_build_only'
-    runs-on: ubuntu-latest      
+    runs-on: self-hosted      
     defaults:
       run:
         shell: bash
@@ -58,7 +58,7 @@ jobs:
 
   terraform_deploy:
     if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_deploy_only'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env: 
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
     defaults:
@@ -89,7 +89,7 @@ jobs:
 
   terraform_destroy:
     if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_destroy_only'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env: 
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
     defaults:
