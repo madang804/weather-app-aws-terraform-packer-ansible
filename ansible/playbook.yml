@@ -3,6 +3,7 @@
   remote_user: ubuntu
   become: yes
   vars:
+    ansible_user: ubuntu
     packages:
       - python3-pip
       - python3-venv
