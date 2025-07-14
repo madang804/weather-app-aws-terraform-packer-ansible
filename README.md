@@ -30,11 +30,13 @@ This project consists of:
 - Terraform
 - Hashicorp cloud platform account
 - AWS account with appropriate permissions
+- AWS IAM Identity provider for GitHub Action to access AWS resources
 - GitHub account
 
 ## CI/CD Pipeline
 
 The GitHub Actions workflow performs the following steps:
+- Login to AWS: Login to AWS using temporary credentials provided by AWS IAM Identity Provider
 - Build Custom AMI: Build custom image using packer and ansible provisioner in AWS
 - Build and Deploy: Build and deploy infrastructure to host web app in AWS
 - Endpoint Testing: Tests all API endpoints after deployment
@@ -43,15 +45,13 @@ The GitHub Actions workflow performs the following steps:
 ## Environment Variables
 
 Required environment variables for deployment:
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS_KEY
 - TF_TOKEN_app_terraform_io (Hashicorpt Cloud API token)
 
-These should be set as GitHub Secrets in your repository settings.
+This should be set as GitHub Secrets in your repository settings.
 
 ## Testing
 
-Run a script to test endpoints
+Runs a script to test endpoints
 
 ## License
 
