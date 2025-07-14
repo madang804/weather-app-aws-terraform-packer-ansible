@@ -32,5 +32,5 @@ variable "instance_type" {
 variable "packer_created_ami" {
   description = "value of the AMI created by Packer"
   type        = string
-  default = "packer-amazon_ubuntu24-*"
+  default     = "packer-amazon_ubuntu24-*"
 }
