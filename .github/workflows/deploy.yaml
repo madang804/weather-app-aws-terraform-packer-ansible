@@ -7,9 +7,9 @@ on:
         description: "Select which jobs to run"
         options:
           - all
-          - packer_build_only
-          - terraform_deploy_only
-          - terraform_destroy_only
+          - packer_build
+          - terraform_deploy
+          - terraform_destroy
         default: all
         required: true
 
@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   packer_build:
-    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'packer_build_only'
+    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'packer_build'
     runs-on: ubuntu-latest      
     defaults:
       run:
@@ -57,7 +57,7 @@ jobs:
             .
 
   terraform_deploy:
-    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_deploy_only'
+    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_deploy'
     runs-on: ubuntu-latest
     env: 
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
@@ -65,6 +65,8 @@ jobs:
       run:
         shell: bash
         working-directory: terraform
+    outputs:
+      app_url: ${{ steps.get_app_url.outputs.app_url }}
     steps:
       - name: Configure AWS Credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4.2.1
@@ -87,8 +89,41 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
+      - name: Terraform Output
+        id: get_app_url
+        run: echo "app_url=$(terraform output -raw load_balancer_dns_name)" >> $GITHUB_OUTPUT
+
+  test_endpoints:
+    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_deploy'
+    runs-on: ubuntu-latest
+    needs: terraform_deploy
+    env:
+      APP_URL: ${{ needs.terraform_deploy.outputs.app_url }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: script
+    steps:      
+      - name: Ensure the app URL is set
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "APP_URL is not set. Exiting."
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/Checkout@v4.2.2
+
+      - name: Install curl
+        run: sudo apt install -y curl
+
+      - name: Test Endpoints
+        run: |
+          chmod +x test_endpoints.sh
+          ./test_endpoints.sh "$APP_URL"
+
   terraform_destroy:
-    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_destroy_only'
+    if: github.event.inputs.job_selection == 'all' || github.event.inputs.job_selection == 'terraform_destroy'
     runs-on: ubuntu-latest
     env: 
       TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
