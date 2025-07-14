@@ -103,19 +103,19 @@ jobs:
       run:
         shell: bash
         working-directory: script
-    steps:      
+    steps:
+      - name: Checkout code
+        uses: actions/Checkout@v4.2.2
+
+      - name: Install curl
+        run: sudo apt install -y curl
+
       - name: Ensure the app URL is set
         run: |
           if [ -z "$APP_URL" ]; then
             echo "APP_URL is not set. Exiting."
             exit 1
           fi
-
-      - name: Checkout code
-        uses: actions/Checkout@v4.2.2
-
-      - name: Install curl
-        run: sudo apt install -y curl
 
       - name: Test Endpoints
         run: |

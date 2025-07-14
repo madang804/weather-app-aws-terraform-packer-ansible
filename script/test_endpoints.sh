@@ -14,11 +14,11 @@ ENDPOINTS=(
     "${BASE_URL}/api/v1.0/weather?location=london"
     "${BASE_URL}/api/v1.0/temperature?location=birmingham"
     "${BASE_URL}/api/v1.0/wind?location=manchester"
-    "${BASE_URL}/pi/v1.0/humidity?location==reading"
+    "${BASE_URL}/api/v1.0/humidity?location=reading"
 )
 
 for endpoint in ${ENDPOINTS[@]}; do
-    HTTP_Code = $(curl -so /dev/null -w "%{http_code}" "$endpoint")
+    HTTP_Code=$(curl -so /dev/null -w "%{http_code}" "$endpoint")
     if [ "$HTTP_Code" -eq 200 ]; then
         echo "Success: $endpoint returned HTTP status $HTTP_Code"
     else
